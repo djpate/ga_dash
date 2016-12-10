@@ -1,0 +1,145 @@
+<html>
+  <head>
+  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+  
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
+    <script>
+      (function(w,d,s,g,js,fs){
+        g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(f){this.q.push(f);}};
+        js=d.createElement(s);fs=d.getElementsByTagName(s)[0];
+        js.src='http://apis.google.com/js/platform.js';
+        fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');};
+      }(window,document,'script'));
+    </script>
+  </head>
+
+  <body>
+    <div class="container-fluid">
+    <div id="embed-api-auth-container"></div>
+     <div class="row">
+        <div class="col-sm-6">
+          <h2>Page Views</h2>
+          <div id="page_views"></div>
+        </div>
+        <div class="col-sm-6">
+          <h2>Unique Visitors</h2>
+          <div id="sessions_graph"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">  
+          <h2>Popular referrers</h2>
+          <div id="referer"></div>
+        </div>
+        <div class="col-sm-6">  
+          <h2>Popular pages</h2>
+          <div id="pages"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+
+      gapi.analytics.ready(function() {
+
+        /**
+         * Authorize the user immediately if the user has already granted access.
+         * If no access has been created, render an authorize button inside the
+         * element with the ID "embed-api-auth-container".
+         */
+        gapi.analytics.auth.authorize({
+          container: 'embed-api-auth-container',
+          clientid: '721886294056-1etajebuct0u0b8thpjr2d0uvc0s80bq.apps.googleusercontent.com'
+        });
+
+
+        /**
+         * Create a new DataChart instance with the given query parameters
+         * and Google chart options. It will be rendered inside an element
+         * with the id "chart-container".
+         */
+        var dataChart = new gapi.analytics.googleCharts.DataChart({
+          query: {
+            metrics: 'ga:sessions',
+            dimensions: 'ga:date',
+            'start-date': '30daysAgo',
+            'end-date': 'yesterday'
+          },
+          chart: {
+            container: 'sessions_graph',
+            type: 'LINE',
+            options: {
+              width: '100%'
+            }
+          }
+        });
+
+        var pageViews = new gapi.analytics.googleCharts.DataChart({
+          query: {
+            metrics: 'ga:pageviews',
+            dimensions: 'ga:date',
+            'start-date': '30daysAgo',
+            'end-date': 'yesterday'
+          },
+          chart: {
+            container: 'page_views',
+            type: 'LINE',
+            options: {
+              width: '100%'
+            }
+          }
+        });
+
+        var referersTable = new gapi.analytics.googleCharts.DataChart({
+          query: {
+            metrics: 'ga:sessions',
+            dimensions: 'ga:fullReferrer',
+            sort:'-ga:sessions',
+           'max-results': 15,
+            'start-date': '30daysAgo',
+            'end-date': 'yesterday'
+          },
+          chart: {
+            container: 'referer',
+            type: 'TABLE',
+            options: {
+              width: '100%'
+            }
+          }
+        });
+
+        var pagesTable = new gapi.analytics.googleCharts.DataChart({
+          query: {
+            metrics: 'ga:pageviews',
+            dimensions: 'ga:pagePath',
+            sort:'-ga:pageviews',
+           'max-results': 15,
+            'start-date': '30daysAgo',
+            'end-date': 'yesterday'
+          },
+          chart: {
+            container: 'pages',
+            type: 'TABLE',
+            options: {
+              width: '100%'
+            }
+          }
+        });
+
+
+
+       dataChart.set({query: {ids: 'ga:133903803'}}).execute();
+       referersTable.set({query: {ids: 'ga:133903803'}}).execute();
+       pagesTable.set({query: {ids: 'ga:133903803'}}).execute();
+       pageViews.set({query: {ids: 'ga:133903803'}}).execute();
+
+      });
+    </script>
+  </body>
+</html>
